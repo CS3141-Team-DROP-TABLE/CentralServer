@@ -1,0 +1,34 @@
+#IncludeRegexLine: ^[ 	]*#[ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/james/Code/CS3141/ProjectSRC/NetworkHealthMonitor/CentralServer/src/exampleclient.c
+config.h
+-
+stdio.h
+-
+stdlib.h
+-
+string.h
+-
+assert.h
+-
+gnutls/gnutls.h
+-
+gnutls/x509.h
+-
+sys/types.h
+-
+sys/socket.h
+-
+arpa/inet.h
+-
+netinet/in.h
+-
+unistd.h
+-
+

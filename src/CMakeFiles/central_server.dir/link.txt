@@ -1,0 +1,1 @@
+/usr/bin/cc     CMakeFiles/central_server.dir/main.c.o  -o ../bin/central_server  -L/usr/local/lib -Wl,-rpath,/usr/local/lib -rdynamic -lgnutls 

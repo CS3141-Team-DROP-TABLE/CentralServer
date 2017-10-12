@@ -1,0 +1,6 @@
+/home/james/Code/CS3141/ProjectSRC/NetworkHealthMonitor/CentralServer/CMakeFiles/rebuild_cache.dir
+/home/james/Code/CS3141/ProjectSRC/NetworkHealthMonitor/CentralServer/CMakeFiles/edit_cache.dir
+/home/james/Code/CS3141/ProjectSRC/NetworkHealthMonitor/CentralServer/src/CMakeFiles/edit_cache.dir
+/home/james/Code/CS3141/ProjectSRC/NetworkHealthMonitor/CentralServer/src/CMakeFiles/rebuild_cache.dir
+/home/james/Code/CS3141/ProjectSRC/NetworkHealthMonitor/CentralServer/src/CMakeFiles/exampleclient.dir
+/home/james/Code/CS3141/ProjectSRC/NetworkHealthMonitor/CentralServer/src/CMakeFiles/central_server.dir
