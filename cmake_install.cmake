@@ -35,6 +35,7 @@ endif()
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for each subdirectory.
   include("/home/james/Code/CS3141/ProjectSRC/NetworkHealthMonitor/CentralServer/src/cmake_install.cmake")
+  include("/home/james/Code/CS3141/ProjectSRC/NetworkHealthMonitor/CentralServer/tests/cmake_install.cmake")
 
 endif()
 
