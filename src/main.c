@@ -1,4 +1,3 @@
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -10,14 +9,21 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 
+#include <pthread.h>
 
 #include <gnutls/gnutls.h>
+
+
+#include <clientHandler.h>
 
 #define KEYFILE "NHM_server.key.pem" 
 #define CERTFILE "NHM_server.cert.pem" 
 #define CAFILE "intermediate.cert.pem" 
 #define CRLFILE "intermediate.crl.pem"
 #define OCSP_STATUS_FILE "ocsp-status.der"
+
+
+void *handle_client(void *argsin);
 
 int main(){
   int socket_fd;
@@ -72,8 +78,8 @@ int main(){
     fprintf(stderr, "ERORR Setting key file\n\n");
   if(gnutls_certificate_set_x509_crl_file(x509_cred, CRLFILE, GNUTLS_X509_FMT_PEM)<0) 
     fprintf(stderr, "ERORR Setting crl\n\n");   
-  if(gnutls_certificate_set_known_dh_params(x509_cred, GNUTLS_SEC_PARAM_MEDIUM)<0)
-    fprintf(stderr, "ERORR setting dh parameters\n");
+  //if(gnutls_certificate_set_known_dh_params(x509_cred, GNUTLS_SEC_PARAM_MEDIUM)<0)
+  //fprintf(stderr, "ERORR setting dh parameters\n");
 
   
   gnutls_priority_init(&priority_cache, NULL, NULL);
@@ -86,67 +92,18 @@ int main(){
    * ========================================================================= */
   listen(socket_fd, 100);
 
-  char buffer[256];
-  int n = 0;
-  char quit[6];
-  memcpy(quit, "quit\n\0", 7);
+  struct connection_args *args;
+  
   while(1){
-    connection_fd = accept(socket_fd,
-				 (struct sockaddr *)&client_socket,
-				 &client_addrlen);
+    args = malloc(sizeof(struct connection_args));
+    args->x509_cred = &x509_cred;
+    args->priority_cache = &priority_cache;
+    args->connection_fd = accept(socket_fd,
+			   (struct sockaddr *)&(args->client_socket),
+			   &(args->client_addrlen));
 
-    
-    /* =========================================================================
-     * Attach GNUtls session to socket
-     * ========================================================================= */
-    gnutls_init(&session, GNUTLS_SERVER);
-    gnutls_priority_set(session, priority_cache);
-    gnutls_credentials_set(session, GNUTLS_CRD_CERTIFICATE, x509_cred);
-    gnutls_certificate_server_set_request(session, GNUTLS_CERT_IGNORE);
-    gnutls_handshake_set_timeout(session, GNUTLS_DEFAULT_HANDSHAKE_TIMEOUT);
-    gnutls_transport_set_int(session, connection_fd);
+    pthread_create(&(args->thread_handle), NULL, handle_client, (void*) args);
 
-
-    // Handshake
-    int ret;
-    do {
-      ret = gnutls_handshake(session);
-      printf("Handshake failed -- retrying\n\n");
-    } while (ret < 0 && gnutls_error_is_fatal(ret) == 0);
-    if (ret < 0) {
-      fprintf(stderr,
-	      "[Central Server] TLS handshake failed (%s)\n\n",
-	      gnutls_strerror(ret));
-      break;
-    }
-    printf("Handshake completed\n\n");
-
-
-    
-
-    memset(buffer, 0, 256);
-    ret = 1;
-    while(memcmp(buffer, quit, 4) != 0  && ret != 0){
-      
-      printf("%d\n\n", memcmp(buffer, quit, 5) );
-      memset(buffer, 0, 256);
-      
-      do { //recv is non-blocking
-	usleep(100);
-	ret = gnutls_record_recv(session, buffer, 255);
-      }while(ret == GNUTLS_E_AGAIN);
-
-      
-      printf("\"%s\"\n", buffer);
-      //write(connection_fd, buffer, n);
-      gnutls_record_send(session, buffer, ret);
-      
-    }
-
-    printf("Connection terminated\n\n");
-    gnutls_bye(session, GNUTLS_SHUT_WR);
-    close(connection_fd);
-    gnutls_deinit(session);
 
   }
 

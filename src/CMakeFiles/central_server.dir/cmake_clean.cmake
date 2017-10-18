@@ -1,4 +1,5 @@
 file(REMOVE_RECURSE
+  "CMakeFiles/central_server.dir/clientHandler.c.o"
   "CMakeFiles/central_server.dir/main.c.o"
   "../bin/central_server.pdb"
   "../bin/central_server"

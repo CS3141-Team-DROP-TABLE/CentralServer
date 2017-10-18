@@ -4,7 +4,7 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_C
-  "/home/james/Code/CS3141/ProjectSRC/NetworkHealthMonitor/CentralServer/src/exampleclient.c" "/home/james/Code/CS3141/ProjectSRC/NetworkHealthMonitor/CentralServer/src/CMakeFiles/exampleclient.dir/exampleclient.c.o"
+  "/home/james/Code/NetworkHealthMonitor/CentralServer/src/exampleclient.c" "/home/james/Code/NetworkHealthMonitor/CentralServer/src/CMakeFiles/exampleclient.dir/exampleclient.c.o"
   )
 set(CMAKE_C_COMPILER_ID "GNU")
 

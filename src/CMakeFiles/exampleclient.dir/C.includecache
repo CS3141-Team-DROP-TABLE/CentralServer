@@ -6,7 +6,7 @@
 
 #IncludeRegexTransform: 
 
-/home/james/Code/CS3141/ProjectSRC/NetworkHealthMonitor/CentralServer/src/exampleclient.c
+/home/james/Code/NetworkHealthMonitor/CentralServer/src/exampleclient.c
 config.h
 -
 stdio.h

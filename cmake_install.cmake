@@ -1,4 +1,4 @@
-# Install script for directory: /home/james/Code/CS3141/ProjectSRC/NetworkHealthMonitor/CentralServer
+# Install script for directory: /home/james/Code/NetworkHealthMonitor/CentralServer
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -29,13 +29,12 @@ endif()
 
 # Install shared libraries without execute permission?
 if(NOT DEFINED CMAKE_INSTALL_SO_NO_EXE)
-  set(CMAKE_INSTALL_SO_NO_EXE "0")
+  set(CMAKE_INSTALL_SO_NO_EXE "1")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for each subdirectory.
-  include("/home/james/Code/CS3141/ProjectSRC/NetworkHealthMonitor/CentralServer/src/cmake_install.cmake")
-  include("/home/james/Code/CS3141/ProjectSRC/NetworkHealthMonitor/CentralServer/tests/cmake_install.cmake")
+  include("/home/james/Code/NetworkHealthMonitor/CentralServer/src/cmake_install.cmake")
 
 endif()
 
@@ -47,5 +46,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "/home/james/Code/CS3141/ProjectSRC/NetworkHealthMonitor/CentralServer/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "/home/james/Code/NetworkHealthMonitor/CentralServer/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")

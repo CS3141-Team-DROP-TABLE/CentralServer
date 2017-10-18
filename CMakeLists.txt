@@ -7,8 +7,8 @@ set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR})
 set(LIBRARY_OUTPUT_PATH ${CMAKE_SOURCE_DIR}/lib)
 
 
-enable_testing()
+#enable_testing()
 
 include_directories(include)
 add_subdirectory(src)
-add_subdirectory(tests)
+#add_subdirectory(tests)
