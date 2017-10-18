@@ -3,7 +3,7 @@
 #include <linkedList.h>
 #include <pthread.h>
 
-
+#include <stdio.h>
 
 void ll_initialize(struct list *l){
   l->root = NULL;
@@ -49,6 +49,8 @@ struct list_node *ll_insert_val(struct list *l, void *val){
   pthread_mutex_lock(&(l->mut));
   struct list_node *ret = ll_insert_node(l, ll_create_node(val));
   pthread_mutex_unlock(&(l->mut));
+
+  return ret;
 }
 
 
@@ -137,6 +139,22 @@ void ll_remove_val(struct list *l, void *val, size_t cmp_sz){
   free(mk);
 }
 
+void *ll_remove_root(struct list *l){
+
+  pthread_mutex_lock(&(l->mut));
+  struct list_node *mk;
+
+  void *ret = NULL;
+ 
+  mk = l->root;
+  if(mk != NULL){
+    ret = mk->val;
+    ll_disconnect_node(l, mk);
+  };
+
+  pthread_mutex_unlock(&(l->mut));
+  return ret;
+}
 
 
 struct list_node *ll_remove_last_node(struct list *l){
@@ -161,7 +179,7 @@ struct list_node *ll_pq_insert(struct list *l, struct list_node *ln){
   } else {
      struct list_node *mk = l->root;
 
-     while(mk->next != NULL && ln->priority < mk->priority){
+     while(mk->next != NULL && ln->priority < mk->next->priority){
        mk = mk->next;
 
      }
@@ -177,15 +195,18 @@ struct list_node *ll_pq_insert(struct list *l, struct list_node *ln){
        ln->next = mk;
        l->root = ln;
        mk->prev = ln;
+       ln->prev = NULL;
+     } else {
+       ln->next = mk->next;
+       if(mk->next != NULL) mk->next->prev = ln;
+       ln->prev = mk;
+       mk->next = ln;
      }
        
      
      if(mk == l->tail)
        l->tail = mk;
 
-     ln->next = mk->next;
-     ln->prev = mk;
-     mk->next = ln;
      
      l->size++;
   }
@@ -208,13 +229,14 @@ struct list_node *ll_pq_enqueue(struct list *l, void *val, int priority){
 
 
 void *ll_pq_dequeue(struct list *l){
-  void *ret;
+  void *ret = NULL;
 
-  pthread_mutex_unlock(&(l->mut));
+  pthread_mutex_lock(&(l->mut));
   if(l->tail != NULL){
     ret = l->tail->val;
     ll_disconnect_node(l, l->tail);
   }
   pthread_mutex_unlock(&(l->mut));
-  
+
+  return ret;
 }
