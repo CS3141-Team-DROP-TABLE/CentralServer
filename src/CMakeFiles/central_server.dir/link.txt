@@ -1,1 +1,0 @@
-/usr/bin/cc     CMakeFiles/central_server.dir/clientHandler.c.o CMakeFiles/central_server.dir/main.c.o  -o ../bin/central_server  -L/usr/local/lib -rdynamic -lgnutls -lpthread -Wl,-rpath,/usr/local/lib 

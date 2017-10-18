@@ -1,6 +1,10 @@
 *~
-bin/
-lib/
-**CMakeCache.txt
-**Makefile
-**CMakeFiles/
+/bin
+/lib
+/Testing
+CMakeCache.txt
+Makefile
+**/CMakeFiles
+*.cmake
+**/*.dir/
+tests/*_test

@@ -1,1 +1,0 @@
-/usr/bin/cc     CMakeFiles/exampleclient.dir/exampleclient.c.o  -o ../bin/exampleclient  -L/usr/local/lib -rdynamic -lgnutls -Wl,-rpath,/usr/local/lib 
