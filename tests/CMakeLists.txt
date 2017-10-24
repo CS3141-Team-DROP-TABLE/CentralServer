@@ -11,4 +11,3 @@ include_directories(. ../src)
 add_executable(ll_test ll_test.c)
 target_link_libraries(ll_test ${LIBS})
 add_test(ll_test ${CMAKE_CURRENT_BINARY_DIR}/ll_test)
-
