@@ -29,7 +29,7 @@
 
 #define MAX_BUF 1024
 #define CAFILE "NHM_server.cert.pem"
-#define MSG "GET / HTTP/1.0\r\n\r\n"
+#define MSG "TARGET:x.x.x.x TYPE:PING MS:00\r\n\r\n"
 
 extern int tcp_connect(void);
 extern void tcp_close(int sd);

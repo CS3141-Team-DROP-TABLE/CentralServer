@@ -4,7 +4,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/tests)
 enable_testing()
 find_package(Check REQUIRED)
 include_directories()
-set(LIBS ${LIBS} ${CHECK_LIBRARIES} linkedList)
+set(LIBS ${LIBS} ${CHECK_LIBRARIES} pthread linkedList)
 
 include_directories(. ../src)
 
