@@ -8,6 +8,7 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
+#include <arpa/inet.h>
 
 #include <pthread.h>
 
@@ -59,9 +60,7 @@ void *handle_client(void *argsin){
   
   memset(buffer, 0, 256);
   ret = 1;
-  while(memcmp(buffer, quit, 4) != 0  && ret != 0){
-    
-    printf("%d\n\n", memcmp(buffer, quit, 5) );
+  while(memcmp(buffer, quit, 4) != 0  && ret > 0){
     memset(buffer, 0, 256);
     
     do { //recv is non-blocking
@@ -69,10 +68,21 @@ void *handle_client(void *argsin){
       ret = gnutls_record_recv(session, buffer, 255);
     }while(ret == GNUTLS_E_AGAIN);
     
-    
-    printf("\"%s\"\n", buffer);
-    //write(connection_fd, buffer, n);
-    gnutls_record_send(session, buffer, ret);
+
+    if(memcmp(buffer, "hello", 5) == 0){
+      buffer[0] = 1;
+      in_addr_t addr = inet_addr("127.0.0.1");
+      memcpy(&buffer[1], &addr, sizeof(in_addr_t));
+      //printf("\"%s\"\n", buffer);
+      //write(connection_fd, buffer, n);
+      gnutls_record_send(session, buffer, ret);
+      
+      addr = inet_addr("8.8.8.8");
+      memcpy(&buffer[1], &addr, sizeof(in_addr_t));
+      gnutls_record_send(session, buffer, ret);
+    } else {
+      printf("%s\n", buffer);
+    }
     
   }
   

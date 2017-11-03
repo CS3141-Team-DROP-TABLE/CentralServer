@@ -28,7 +28,7 @@
 #define CHECK(x) assert((x)>=0)
 
 #define MAX_BUF 1024
-#define CAFILE "NHM_server.cert.pem"
+#define CAFILE "intermediate.cert.pem"
 #define MSG "TARGET:x.x.x.x TYPE:PING MS:00\r\n\r\n"
 
 extern int tcp_connect(void);
