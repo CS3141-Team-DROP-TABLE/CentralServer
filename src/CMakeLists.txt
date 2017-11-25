@@ -1,6 +1,6 @@
 link_directories(/usr/local/lib)
 
-set(LIBS ${LIBS} gnutls pthread)
+set(LIBS ${LIBS} mariadb gnutls pthread AVL stringMap configLoader linkedList)
 
 add_executable(central_server clientHandler.c main.c)
 add_executable(exampleclient exampleclient.c)

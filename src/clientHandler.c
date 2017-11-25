@@ -14,7 +14,34 @@
 
 #include <gnutls/gnutls.h>
 
+#include <AVL.h>
+#include <stringMap.h>
+#include <configLoader.h>
+
+
 #include <clientHandler.h>
+
+
+struct sender_args{
+  gnutls_session_t *session;
+
+};
+
+
+void send_all(void *a, void *b, void *argsin){
+  struct sender_args *args = (struct sender_args*)argsin;
+  char buffer[512];
+  buffer[511] = '\0';
+  snprintf(buffer, 511, "Host:%s\n", (char*)a);
+  gnutls_record_send(*args->session, buffer, strnlen(buffer, 512));
+}
+
+void send_all_hosts(gnutls_session_t *session, struct str_map *s){
+  struct sender_args sa;
+  sa.session = session;
+  str_apply_to_all(s, &send_all, &sa);
+
+}
 
 void *handle_client(void *argsin){
 
@@ -70,17 +97,7 @@ void *handle_client(void *argsin){
     
     printf("Message received\n");
     if(memcmp(buffer, "hello", 5) == 0){
-      memset(buffer, 0, 256);
-      buffer[0] = 1;
-      in_addr_t addr = inet_addr("127.0.0.1");
-      //memcpy(&buffer[1], &addr, sizeof(in_addr_t));
-      //printf("\"%s\"\n", buffer);
-      //write(connection_fd, buffer, n);
-      //gnutls_record_send(session, buffer, sizeof(in_addr_t)+1);
-      
-      addr = inet_addr("8.8.8.8");
-      memcpy(&buffer[1], &addr, sizeof(in_addr_t));
-      gnutls_record_send(session, buffer, sizeof(in_addr_t)+1);
+      send_all_hosts(&session, args->targets);
     } else {
       printf("Message Recived: %d: %s\n ", ret, buffer);
       gnutls_record_send(session, "recv\n\0", 5);

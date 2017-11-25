@@ -11,11 +11,16 @@
 
 #include <gnutls/gnutls.h>
 
+#include <AVL.h>
+#include <stringMap.h>
+#include <configLoader.h>
 
 struct connection_args{
   pthread_t thread_handle;
   int iret;
 
+  struct str_map *targets;
+  struct config *conf;
   
   int connection_fd;
   //int socket_fd;
@@ -30,5 +35,6 @@ struct connection_args{
 
 
 
+void *handle_client(void *argsin);
 
 #endif
