@@ -11,5 +11,6 @@ enable_testing()
 
 include_directories(include)
 include_directories(src/lib/include)
+include_directories(/usr/include/mariadb)
 add_subdirectory(src)
 
