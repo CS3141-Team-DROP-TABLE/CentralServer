@@ -68,20 +68,23 @@ void *handle_client(void *argsin){
       ret = gnutls_record_recv(session, buffer, 255);
     }while(ret == GNUTLS_E_AGAIN);
     
-
+    printf("Message received\n");
     if(memcmp(buffer, "hello", 5) == 0){
+      memset(buffer, 0, 256);
       buffer[0] = 1;
       in_addr_t addr = inet_addr("127.0.0.1");
-      memcpy(&buffer[1], &addr, sizeof(in_addr_t));
+      //memcpy(&buffer[1], &addr, sizeof(in_addr_t));
       //printf("\"%s\"\n", buffer);
       //write(connection_fd, buffer, n);
-      gnutls_record_send(session, buffer, ret);
+      //gnutls_record_send(session, buffer, sizeof(in_addr_t)+1);
       
       addr = inet_addr("8.8.8.8");
       memcpy(&buffer[1], &addr, sizeof(in_addr_t));
-      gnutls_record_send(session, buffer, ret);
+      gnutls_record_send(session, buffer, sizeof(in_addr_t)+1);
     } else {
-      printf("%s\n", buffer);
+      printf("Message Recived: %d: %s\n ", ret, buffer);
+      gnutls_record_send(session, "recv\n\0", 5);
+      
     }
     
   }

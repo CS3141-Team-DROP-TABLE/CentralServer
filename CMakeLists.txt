@@ -10,5 +10,6 @@ set(LIBRARY_OUTPUT_PATH ${CMAKE_SOURCE_DIR}/lib)
 enable_testing()
 
 include_directories(include)
+include_directories(src/lib/include)
 add_subdirectory(src)
 add_subdirectory(tests)
