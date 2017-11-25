@@ -11,7 +11,7 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 
-#include <mysql.h>
+#include <mariadb/mysql.h>
 
 #include <pthread.h>
 
