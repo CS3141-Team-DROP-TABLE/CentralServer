@@ -98,9 +98,22 @@ void *handle_client(void *argsin){
     printf("Message received\n");
     if(memcmp(buffer, "hello", 5) == 0){
       send_all_hosts(&session, args->targets);
+    } else if(strncmp(buffer, "Recv:", 5) == 0){
+      char host[100];
+      char time[100];
+      sscanf(&buffer[5], "%20[^=]%*c%20[^;]", host, time); 
+      snprintf(buffer, 250, "UPDATE stats SET timestamp=CURRENT_TIMESTAMP, ping=%d WHERE ip='%s';", atoi(time), host);
+
+      printf("%s\n", buffer);
+      send_all_hosts(&session, args->targets);
+     
+      if ( mysql_real_query(args->mysql, buffer, strnlen(buffer, 250))) {
+	printf("Query failed: %s\n", mysql_error(args->mysql));
+      } 
+      
     } else {
       printf("Message Recived: %d: %s\n ", ret, buffer);
-      gnutls_record_send(session, "recv\n\0", 5);
+      
       
     }
     

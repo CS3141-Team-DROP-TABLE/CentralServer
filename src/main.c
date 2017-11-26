@@ -117,41 +117,16 @@ void configure_gnutls(struct config *conf, gnutls_certificate_credentials_t *x50
 
 void *mysql_target_listener(void *argsin){
   struct mysql_th_args *args = (struct mysql_th_args*)argsin;
-  MYSQL *mysql = NULL;
-  mysql = mysql_init(mysql);
-  if(mysql == NULL){
-    fprintf(stderr, "Mysql init failure\n");
-    return NULL;
-  }
 
-  if(get_config(args->conf, "mysql_port") == NULL)
-    config_parse_line(args->conf, "mysql_port=0;\n");
-  
-  if(!mysql_real_connect(mysql,
-			 get_config(args->conf, "mysql_host"),
-			 get_config(args->conf, "mysql_username"),
-			 get_config(args->conf, "mysql_password"),
-			 get_config(args->conf, "mysql_db"),
-			 atoi(get_config(args->conf, "mysql_port")),
-			 NULL, // create your own socket,
-			 CLIENT_FOUND_ROWS
-			 )){
-    fprintf(stderr, "Mysql connect failure\n");
-    mysql_close(mysql);
-    return NULL;
-  }
-
-
-  
   
   while(args->run){
-    if (mysql_query(mysql, "SELECT * FROM target")) {
-      printf("Query failed: %s\n", mysql_error(mysql));
+    if (mysql_query(args->mysql, "SELECT * FROM target")) {
+      printf("Query failed: %s\n", mysql_error(args->mysql));
     } else {
-      MYSQL_RES *result = mysql_store_result(mysql);
+      MYSQL_RES *result = mysql_store_result(args->mysql);
       
       if (!result) {
-	printf("Couldn't get results set: %s\n", mysql_error(mysql));
+	printf("Couldn't get results set: %s\n", mysql_error(args->mysql));
       } else {
 
 
@@ -171,7 +146,7 @@ void *mysql_target_listener(void *argsin){
     }
   
   }
-  mysql_close(mysql);
+  mysql_close(args->mysql);
 
 }
 
@@ -197,9 +172,35 @@ int main(int argc, char **argv){
   struct str_map targets;
   str_map_init(&targets, NULL, max_ip);
 
+  MYSQL *mysql = NULL;
+  mysql = mysql_init(mysql);
+  if(mysql == NULL){
+    fprintf(stderr, "Mysql init failure\n");
+    return 1;
+  }
+  
+  if(get_config(&conf, "mysql_port") == NULL)
+    config_parse_line(&conf, "mysql_port=0;\n");
+  
+  if(!mysql_real_connect(mysql,
+			 get_config(&conf, "mysql_host"),
+			 get_config(&conf, "mysql_username"),
+			 get_config(&conf, "mysql_password"),
+			 get_config(&conf, "mysql_db"),
+			 atoi(get_config(&conf, "mysql_port")),
+			 NULL, // create your own socket,
+			 CLIENT_FOUND_ROWS
+			 )){
+    fprintf(stderr, "Mysql connect failure\n");
+    mysql_close(mysql);
+    return 1;
+  }
+  
+  
 
   struct mysql_th_args my_th_ar;
   my_th_ar.run = &run;
+  my_th_ar.mysql = mysql;
   my_th_ar.conf = &conf;
   my_th_ar.targets = &targets;
   pthread_create(&(my_th_ar.thread_handle), NULL, mysql_target_listener, (void*) &my_th_ar);
@@ -237,6 +238,7 @@ int main(int argc, char **argv){
     args->connection_fd = accept(sockfd,
 			   (struct sockaddr *)&(args->client_socket),
 			   &(args->client_addrlen));
+    args->mysql = mysql;
 
     args->conf = &conf;
     args->targets = &targets;

@@ -11,6 +11,8 @@
 
 #include <gnutls/gnutls.h>
 
+#include <mariadb/mysql.h>
+
 #include <AVL.h>
 #include <stringMap.h>
 #include <configLoader.h>
@@ -19,6 +21,8 @@ struct connection_args{
   pthread_t thread_handle;
   int iret;
 
+  MYSQL *mysql;
+  
   struct str_map *targets;
   struct config *conf;
   
