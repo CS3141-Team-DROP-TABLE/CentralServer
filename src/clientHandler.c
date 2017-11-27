@@ -48,7 +48,8 @@ void *handle_client(void *argsin){
   gnutls_session_t session;
   struct connection_args *args = (struct connection_args*)argsin;
   
-  char buffer[256];
+  char buffer[255];
+  char insquery[255];
   int n = 0;
   char quit[6];
   memcpy(quit, "quit\n\0", 7);
@@ -95,7 +96,7 @@ void *handle_client(void *argsin){
       ret = gnutls_record_recv(session, buffer, 255);
     }while(ret == GNUTLS_E_AGAIN);
     
-    printf("Message received\n");
+    printf("Message received: %s\n", buffer);
     if(memcmp(buffer, "hello", 5) == 0){
       send_all_hosts(&session, args->targets);
     } else if(strncmp(buffer, "Recv:", 5) == 0){
@@ -103,11 +104,14 @@ void *handle_client(void *argsin){
       char time[100];
       sscanf(&buffer[5], "%20[^=]%*c%20[^;]", host, time); 
       snprintf(buffer, 250, "UPDATE stats SET timestamp=CURRENT_TIMESTAMP, ping=%d WHERE ip='%s';", atoi(time), host);
-
-      printf("%s\n", buffer);
+      snprintf(insquery, 250, "INSERT INTO record (time, ip) VALUES (%d, '%s');", atoi(time), host);
       send_all_hosts(&session, args->targets);
      
       if ( mysql_real_query(args->mysql, buffer, strnlen(buffer, 250))) {
+	printf("Query failed: %s\n", mysql_error(args->mysql));
+      }
+      
+      if ( mysql_real_query(args->mysql, insquery, strnlen(buffer, 250))) {
 	printf("Query failed: %s\n", mysql_error(args->mysql));
       } 
       
