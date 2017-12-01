@@ -115,7 +115,27 @@ void *handle_client(void *argsin){
 	printf("Query failed: %s\n", mysql_error(args->mysql));
       } 
       
-    } else {
+    } else if( memcmp(buffer, "A", 1)) {
+      int id;
+      int code;
+      char msg[1024];
+
+      sscanf(&buffer[1], "%d:%d%1023[\\n]", &id, &code, msg);
+
+      printf("Agent: %d, Code: %d, msg: %s\n", id, code, msg);
+
+      if(code == 0)
+	snprintf(buffer, 1023, "UPDATE agent SET ip='%s' WHERE id=%d;", msg, id);
+      if(code == 1)
+	snprintf(buffer, 1023, "UPDATE agent SET lastCheckIn=NOW() WHERE id=%d;", id);
+      if(code == 3)
+	snprintf(buffer, 1023, "UPDATE agent SET speed='%s' WHERE id=%d;", msg, id);
+
+       if ( mysql_real_query(args->mysql, insquery, strnlen(buffer, 250))) {
+	printf("Query failed: %s\n", mysql_error(args->mysql));
+      }
+       
+    }else {
       printf("Message Recived: %d: %s\n ", ret, buffer);
       
       
